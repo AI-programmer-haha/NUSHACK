@@ -2,14 +2,12 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-# Simulating our secure cloud database ledger
 processed_signatures = set()
 master_timeline = []
 
 
 @app.route('/')
 def home():
-    # Renders the HTML interface and passes the current master timeline to it
     return render_template('index.html', timeline=master_timeline)
 
 
@@ -32,7 +30,6 @@ def sync_data():
         master_timeline.append(packet)
         new_logs_added += 1
 
-    # Sort timeline by original hardware time
     master_timeline.sort(key=lambda x: x["timestamp"])
 
     return jsonify({
@@ -43,5 +40,4 @@ def sync_data():
 
 
 if __name__ == '__main__':
-    # Runs the local server on port 8080 to bypass network blockers
     app.run(debug=True, port=8080)
