@@ -1,0 +1,2930 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Security Management System</title>
+
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        /* =====================================================
+           GENERAL
+           ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f1f5fa;
+            color: #24364b;
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        header {
+            width: 100%;
+            height: 72px;
+
+            background: #1d2a40;
+            color: white;
+
+            padding: 17px 32px;
+        }
+
+        header h1 {
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            font-size: 11px;
+            color: #c9d3df;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+           ===================================================== */
+
+        .container {
+
+            width: 950px;
+
+            max-width:
+                calc(100% - 50px);
+
+            margin: 32px auto 60px;
+        }
+
+
+        /* =====================================================
+           PAGE TITLE
+           ===================================================== */
+
+        .page-title-row {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 18px;
+        }
+
+        .page-title {
+
+            font-size: 21px;
+
+            color: #182b43;
+
+            margin-bottom: 5px;
+        }
+
+        .updated {
+
+            font-size: 10px;
+
+            color: #8492a2;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+           ===================================================== */
+
+        button {
+
+            border: none;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            transition:
+                0.15s ease;
+        }
+
+        button:hover {
+
+            filter:
+                brightness(0.94);
+        }
+
+        button:active {
+
+            transform:
+                translateY(1px);
+        }
+
+        .blue-button {
+
+            background: #2869df;
+
+            color: white;
+
+            border-radius: 6px;
+
+            padding:
+                10px 15px;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           STATUS CARDS
+           ===================================================== */
+
+        .status-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+        }
+
+        .status-card {
+
+            background: white;
+
+            border:
+                1px solid #e0e6ee;
+
+            border-radius: 8px;
+
+            min-height: 72px;
+
+            padding:
+                13px 16px;
+
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .status-label {
+
+            font-size: 10px;
+
+            color: #7d8b9c;
+
+            margin-bottom: 7px;
+        }
+
+        .status-value {
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #2b3d52;
+        }
+
+        .green {
+
+            color: #16a866;
+        }
+
+        .red {
+
+            color: #e53935;
+        }
+
+        .blue {
+
+            color: #2869df;
+        }
+
+
+        /* =====================================================
+           GENERAL CARDS
+           ===================================================== */
+
+        .card {
+
+            background: white;
+
+            border:
+                1px solid #e0e6ee;
+
+            border-radius: 8px;
+
+            padding: 17px;
+
+            margin-bottom: 16px;
+
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+
+        .card-title {
+
+            color: #1c3048;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 11px;
+        }
+
+
+        /* =====================================================
+           PATROL
+           ===================================================== */
+
+        .label {
+
+            display: block;
+
+            color: #748397;
+
+            font-size: 10px;
+
+            margin-bottom: 6px;
+        }
+
+        .patrol-row {
+
+            display: flex;
+
+            gap: 8px;
+
+            align-items: center;
+        }
+
+        .patrol-select {
+
+            flex: 1;
+
+            height: 36px;
+
+            background: white;
+
+            border:
+                1px solid #b9c6d6;
+
+            border-radius: 6px;
+
+            padding:
+                0 11px;
+
+            font-size: 11px;
+
+            color: #34475c;
+
+            outline: none;
+        }
+
+        .patrol-select:focus {
+
+            border-color:
+                #2869df;
+        }
+
+        .recent {
+
+            margin-top: 13px;
+        }
+
+        .recent-heading {
+
+            color: #52657a;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .recent-empty {
+
+            color: #929eac;
+
+            font-size: 10px;
+
+            margin-top: 6px;
+        }
+
+
+        /* =====================================================
+           SYNCHRONISATION MONITOR
+           ===================================================== */
+
+        .sync-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom: 11px;
+        }
+
+        .sync-heading .card-title {
+
+            margin-bottom: 0;
+        }
+
+        .sync-controls {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+        .sync-badge {
+
+            background: #e5f8ed;
+
+            color: #14985a;
+
+            border-radius: 10px;
+
+            padding:
+                5px 9px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+        }
+
+        .sync-now {
+
+            background: #2869df;
+
+            color: white;
+
+            border-radius: 5px;
+
+            padding:
+                6px 10px;
+
+            font-size: 9px;
+        }
+
+        .sync-stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 7px;
+        }
+
+        .sync-stat {
+
+            background: #f5f8fc;
+
+            border-radius: 5px;
+
+            padding:
+                9px 10px;
+
+            min-height: 50px;
+        }
+
+        .sync-stat-label {
+
+            display: block;
+
+            color: #8996a5;
+
+            font-size: 8px;
+
+            margin-bottom: 5px;
+        }
+
+        .sync-stat-value {
+
+            display: block;
+
+            color: #30445b;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .sync-message {
+
+            margin-top: 11px;
+
+            color: #77879a;
+
+            font-size: 9px;
+        }
+
+        .outbox {
+
+            margin-top: 10px;
+        }
+
+        .outbox-title {
+
+            color: #52657a;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .outbox-text {
+
+            color: #8997a7;
+
+            font-size: 9px;
+
+            margin-top: 5px;
+        }
+
+        .history {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            color: #2869df;
+
+            font-size: 9px;
+
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           LOCATION + COMMUNICATION
+           ===================================================== */
+
+        .location-communication {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 20px;
+
+            align-items:
+                stretch;
+        }
+
+
+        /* =====================================================
+           MAP SIDE
+           ===================================================== */
+
+        .map-section {
+
+            min-width: 0;
+        }
+
+        .section-subtitle {
+
+            color: #263a51;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            margin-bottom: 9px;
+        }
+
+        #map {
+
+            width: 100%;
+
+            height: 310px;
+
+            border:
+                1px solid #d9e0e8;
+
+            border-radius: 6px;
+
+            overflow: hidden;
+
+            z-index: 1;
+        }
+
+        .map-legend {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 13px;
+
+            margin-top: 9px;
+
+            color: #66788b;
+
+            font-size: 8px;
+        }
+
+        .legend-item {
+
+            display: inline-flex;
+
+            align-items: center;
+        }
+
+        .dot {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            display: inline-block;
+
+            margin-right: 5px;
+        }
+
+        .start-dot {
+
+            background: #20ad67;
+        }
+
+        .current-dot {
+
+            background: #e53935;
+        }
+
+        .route-dot {
+
+            background: #2869df;
+        }
+
+
+        /* =====================================================
+           LOCATION INFORMATION
+           ===================================================== */
+
+        .location-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 6px;
+
+            margin-top: 9px;
+        }
+
+        .location-info-box {
+
+            background: #f5f8fc;
+
+            border-radius: 5px;
+
+            padding: 8px;
+        }
+
+        .location-info-label {
+
+            display: block;
+
+            color: #8492a2;
+
+            font-size: 7px;
+
+            margin-bottom: 4px;
+        }
+
+        .location-info-value {
+
+            color: #30445b;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            word-break:
+                break-word;
+        }
+
+
+        /* =====================================================
+           COMMUNICATION SERVICES
+           ===================================================== */
+
+        .communication-section {
+
+            border-left:
+                1px solid #e2e7ee;
+
+            padding-left: 20px;
+
+            min-width: 0;
+        }
+
+        .communication-description {
+
+            color: #7b8999;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+
+            margin-bottom: 14px;
+        }
+
+        .communication-label {
+
+            display: block;
+
+            color: #64758a;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        /* =====================================================
+           BADGE INPUT
+           ===================================================== */
+
+        .badge-input {
+
+            width: 100%;
+
+            height: 35px;
+
+            border:
+                1px solid #b9c6d6;
+
+            border-radius: 5px;
+
+            padding:
+                0 10px;
+
+            font-size: 10px;
+
+            color: #30445b;
+
+            outline: none;
+
+            margin-bottom: 7px;
+        }
+
+        .badge-input:focus {
+
+            border-color:
+                #2869df;
+
+            box-shadow:
+                0 0 0 2px rgba(40, 105, 223, 0.08);
+        }
+
+        .badge-status {
+
+            background: #f5f8fc;
+
+            border-radius: 5px;
+
+            padding: 9px;
+
+            color: #7e8c9c;
+
+            font-size: 8px;
+
+            margin-bottom: 12px;
+        }
+
+
+        /* =====================================================
+           COMMUNICATION BUTTONS
+           ===================================================== */
+
+        .communication-button {
+
+            width: 100%;
+
+            height: 37px;
+
+            border-radius: 5px;
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .call-button {
+
+            background: #20a967;
+        }
+
+        .call-button:hover {
+
+            background: #178c55;
+        }
+
+        .message-button {
+
+            background: #2869df;
+        }
+
+        .message-button:hover {
+
+            background: #1f59c1;
+        }
+
+        .communication-icon {
+
+            margin-right: 6px;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           MESSAGE BOX
+           ===================================================== */
+
+        .message-input {
+
+            width: 100%;
+
+            height: 62px;
+
+            resize: none;
+
+            border:
+                1px solid #b9c6d6;
+
+            border-radius: 5px;
+
+            padding: 8px;
+
+            font-size: 9px;
+
+            color: #30445b;
+
+            outline: none;
+
+            margin-bottom: 7px;
+        }
+
+        .message-input:focus {
+
+            border-color:
+                #2869df;
+        }
+
+        .send-message-button {
+
+            width: 100%;
+
+            height: 32px;
+
+            background: #2869df;
+
+            color: white;
+
+            border-radius: 5px;
+
+            font-size: 9px;
+        }
+
+
+        /* =====================================================
+           COMMUNICATION STATUS
+           ===================================================== */
+
+        .communication-status {
+
+            margin-top: 12px;
+
+            border-top:
+                1px solid #e5e9ef;
+
+            padding-top: 10px;
+        }
+
+        .communication-status-title {
+
+            color: #596c81;
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            margin-bottom: 4px;
+        }
+
+        .communication-status-text {
+
+            color: #16a866;
+
+            font-size: 9px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           SAVED LOCATIONS
+           ===================================================== */
+
+        .saved-section {
+
+            margin-top: 2px;
+
+            margin-bottom: 15px;
+        }
+
+        .saved-title {
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            color: #25384e;
+
+            margin-bottom: 8px;
+        }
+
+        .saved-box {
+
+            min-height: 52px;
+
+            background: white;
+
+            border:
+                1px solid #e0e6ee;
+
+            border-radius: 6px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #8997a7;
+
+            font-size: 9px;
+        }
+
+
+        /* =====================================================
+           BOTTOM BUTTONS
+           ===================================================== */
+
+        .bottom-buttons {
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+        .bottom-buttons button {
+
+            padding:
+                9px 13px;
+
+            border-radius: 5px;
+
+            color: white;
+
+            font-size: 9px;
+        }
+
+        .start {
+
+            background: #2869df;
+        }
+
+        .stop {
+
+            background: #e53935;
+        }
+
+        .refresh {
+
+            background: #2869df;
+        }
+
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        footer {
+
+            text-align: center;
+
+            color: #91a0b0;
+
+            font-size: 8px;
+
+            margin-top: 55px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .container {
+
+                max-width:
+                    calc(100% - 30px);
+
+                width: 100%;
+            }
+
+            .status-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .sync-stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .location-communication {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .communication-section {
+
+                border-left: none;
+
+                border-top:
+                    1px solid #e2e7ee;
+
+                padding-left: 0;
+
+                padding-top: 18px;
+            }
+
+            .location-info {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .page-title-row {
+
+                align-items:
+                    flex-start;
+
+                gap: 15px;
+            }
+        }
+
+
+        @media (max-width: 500px) {
+
+            .patrol-row {
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    stretch;
+            }
+
+            .patrol-row button {
+
+                width: 100%;
+            }
+
+            .sync-heading {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+
+                gap: 8px;
+            }
+
+            .bottom-buttons {
+
+                flex-wrap:
+                    wrap;
+            }
+
+            #map {
+
+                height: 280px;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+     HEADER
+     ========================================================= -->
+
+    <header>
+
+        <h1>
+            Security Management System
+        </h1>
+
+        <p>
+            Location Management
+        </p>
+
+    </header>
+
+
+
+    <main class="container">
+
+
+        <!-- =====================================================
+         LOCATIONS TITLE
+         ===================================================== -->
+
+        <div class="page-title-row">
+
+            <div>
+
+                <h2 class="page-title">
+                    Locations
+                </h2>
+
+                <div class="updated">
+
+                    Last updated:
+
+                    <span id="lastUpdated">
+                        --
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button class="blue-button" onclick="refreshLocations()">
+
+                Refresh Locations
+
+            </button>
+
+        </div>
+
+
+
+        <!-- =====================================================
+         STATUS CARDS
+         ===================================================== -->
+
+        <section class="status-grid">
+
+
+            <div class="status-card">
+
+                <div class="status-label">
+                    Internet Connection
+                </div>
+
+                <div id="internetStatus" class="status-value green">
+
+                    ● Online
+
+                </div>
+
+            </div>
+
+
+
+            <div class="status-card">
+
+                <div class="status-label">
+                    Location Tracking
+                </div>
+
+                <div id="gpsStatus" class="status-value">
+
+                    Inactive
+
+                </div>
+
+            </div>
+
+
+
+            <div class="status-card">
+
+                <div class="status-label">
+                    Synchronization
+                </div>
+
+                <div id="syncStatus" class="status-value green">
+
+                    Up to date
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         PATROL
+         ===================================================== -->
+
+        <section class="card">
+
+            <div class="card-title">
+                Patrol
+            </div>
+
+
+            <label class="label" for="checkpoint">
+
+                Location to patrol
+
+            </label>
+
+
+            <div class="patrol-row">
+
+
+                <select id="checkpoint" class="patrol-select">
+
+                    <option>
+                        All checkpoints
+                    </option>
+
+                    <option>
+                        Checkpoint A
+                    </option>
+
+                    <option>
+                        Checkpoint B
+                    </option>
+
+                    <option>
+                        Checkpoint C
+                    </option>
+
+                </select>
+
+
+                <button class="blue-button" onclick="startPatrol()">
+
+                    Start Patrol
+
+                </button>
+
+
+            </div>
+
+
+            <div class="recent">
+
+                <div class="recent-heading">
+
+                    Recent patrols on this device
+
+                </div>
+
+
+                <div id="recentPatrols" class="recent-empty">
+
+                    No finished patrols on this device yet.
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         SYNCHRONISATION MONITOR
+         ===================================================== -->
+
+        <section class="card">
+
+
+            <div class="sync-heading">
+
+
+                <div class="card-title">
+
+                    Synchronisation Monitor
+
+                </div>
+
+
+                <div class="sync-controls">
+
+
+                    <span id="syncBadge" class="sync-badge">
+
+                        Up to date
+
+                    </span>
+
+
+                    <button class="sync-now" onclick="syncNow()">
+
+                        Sync now
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="sync-stats">
+
+
+                <div class="sync-stat">
+
+                    <span class="sync-stat-label">
+                        Waiting
+                    </span>
+
+                    <span id="waiting" class="sync-stat-value">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="sync-stat">
+
+                    <span class="sync-stat-label">
+                        Conflicts
+                    </span>
+
+                    <span id="conflicts" class="sync-stat-value">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="sync-stat">
+
+                    <span class="sync-stat-label">
+                        Rejected
+                    </span>
+
+                    <span id="rejected" class="sync-stat-value">
+
+                        0
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="sync-stat">
+
+                    <span class="sync-stat-label">
+                        Last upload
+                    </span>
+
+                    <span id="lastUpload" class="sync-stat-value">
+
+                        Never
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="sync-stat">
+
+                    <span class="sync-stat-label">
+                        Device
+                    </span>
+
+                    <span class="sync-stat-value">
+
+                        963874eb
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div id="syncMessage" class="sync-message">
+
+                Last attempt 10s ago: 0 uploaded
+
+            </div>
+
+
+
+            <div class="outbox">
+
+                <div class="outbox-title">
+                    Outbox
+                </div>
+
+                <div class="outbox-text">
+
+                    Nothing waiting — every change is on the server.
+
+                </div>
+
+            </div>
+
+
+            <div class="history" onclick="showHistory()">
+
+                ▸ Server sync history
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         LOCATION + COMMUNICATION SERVICES
+         ===================================================== -->
+
+        <section class="card">
+
+
+            <div class="card-title">
+
+                Location History &amp;
+                Communication Services
+
+            </div>
+
+
+            <div class="location-communication">
+
+
+                <!-- =================================================
+                 LEFT: MAP
+                 ================================================= -->
+
+                <div class="map-section">
+
+
+                    <div class="section-subtitle">
+
+                        Location History &amp; Route
+
+                    </div>
+
+
+                    <div id="map"></div>
+
+
+                    <div class="map-legend">
+
+
+                        <span class="legend-item">
+
+                            <span class="dot start-dot">
+                            </span>
+
+                            Starting Point
+
+                        </span>
+
+
+                        <span class="legend-item">
+
+                            <span class="dot current-dot">
+                            </span>
+
+                            Current Location
+
+                        </span>
+
+
+                        <span class="legend-item">
+
+                            <span class="dot route-dot">
+                            </span>
+
+                            Path Taken
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="location-info">
+
+
+                        <div class="location-info-box">
+
+                            <span class="location-info-label">
+
+                                Latitude
+
+                            </span>
+
+                            <span id="latitude" class="location-info-value">
+
+                                Not available
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="location-info-box">
+
+                            <span class="location-info-label">
+
+                                Longitude
+
+                            </span>
+
+                            <span id="longitude" class="location-info-value">
+
+                                Not available
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="location-info-box">
+
+                            <span class="location-info-label">
+
+                                GPS Accuracy
+
+                            </span>
+
+                            <span id="accuracy" class="location-info-value">
+
+                                Not available
+
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                 RIGHT: COMMUNICATION
+                 ================================================= -->
+
+                <div class="communication-section">
+
+
+                    <div class="section-subtitle">
+
+                        Communication Services
+
+                    </div>
+
+
+                    <div class="communication-description">
+
+                        Contact security personnel using
+                        their registered badge number.
+
+                    </div>
+
+
+                    <!-- Badge -->
+
+                    <label class="communication-label" for="badgeNumber">
+
+                        Badge Number
+
+                    </label>
+
+
+                    <input id="badgeNumber" class="badge-input" type="text" placeholder="Enter badge number">
+
+
+                    <div id="badgeStatus" class="badge-status">
+
+                        No personnel selected.
+
+                    </div>
+
+
+                    <!-- Call -->
+
+                    <button class="
+                        communication-button
+                        call-button
+                    " onclick="callBadge()">
+
+                        <span class="communication-icon">
+
+                            ☎
+
+                        </span>
+
+                        Call Personnel
+
+                    </button>
+
+
+                    <!-- Message -->
+
+                    <button class="
+                        communication-button
+                        message-button
+                    " onclick="messageBadge()">
+
+                        <span class="communication-icon">
+
+                            ✉
+
+                        </span>
+
+                        Send Message
+
+                    </button>
+
+
+                    <!-- Quick message -->
+
+                    <label class="communication-label" for="messageText">
+
+                        Quick Message
+
+                    </label>
+
+
+                    <textarea id="messageText" class="message-input" placeholder="Type a message..."></textarea>
+
+
+                    <button class="send-message-button" onclick="sendMessage()">
+
+                        Send Message
+
+                    </button>
+
+
+                    <!-- Communication status -->
+
+                    <div class="communication-status">
+
+
+                        <div class="communication-status-title">
+
+                            Communication Status
+
+                        </div>
+
+
+                        <div id="communicationStatus" class="communication-status-text">
+
+                            Ready
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         SAVED LOCATIONS
+         ===================================================== -->
+
+        <section class="saved-section">
+
+
+            <div class="saved-title">
+
+                Saved Locations
+
+            </div>
+
+
+            <div id="savedLocations" class="saved-box">
+
+                No locations found.
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         TRACKING BUTTONS
+         ===================================================== -->
+
+        <div class="bottom-buttons">
+
+
+            <button class="start" onclick="startTracking()">
+
+                Start Tracking
+
+            </button>
+
+
+            <button class="stop" onclick="stopTracking()">
+
+                Stop Tracking
+
+            </button>
+
+
+            <button class="refresh" onclick="refreshLocation()">
+
+                Refresh Location
+
+            </button>
+
+
+        </div>
+
+
+
+        <footer>
+
+            Security Management System
+
+        </footer>
+
+
+    </main>
+
+
+
+    <!-- =========================================================
+     LEAFLET
+     ========================================================= -->
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+
+    <script>
+
+
+        /* =====================================================
+           MAP
+           ===================================================== */
+
+        const map =
+            L.map("map").setView(
+                [1.3521, 103.8198],
+                13
+            );
+
+
+        L.tileLayer(
+
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+            {
+
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+
+            }
+
+        ).addTo(map);
+
+
+
+        let currentMarker = null;
+
+        let startingMarker = null;
+
+        let routeLine = null;
+
+        let routeCoordinates = [];
+
+        let watchId = null;
+
+        let patrolStarted = false;
+
+
+
+        /* =====================================================
+           SAMPLE ROUTE
+           ===================================================== */
+
+        const sampleRoute = [
+
+            [1.3488, 103.8159],
+
+            [1.3498, 103.8171],
+
+            [1.3510, 103.8184],
+
+            [1.3521, 103.8197],
+
+            [1.3533, 103.8208]
+
+        ];
+
+
+        routeCoordinates =
+            sampleRoute.slice();
+
+
+
+        /* =====================================================
+           STARTING MARKER
+           ===================================================== */
+
+        startingMarker =
+
+            L.circleMarker(
+
+                routeCoordinates[0],
+
+                {
+
+                    radius: 7,
+
+                    color: "#20ad67",
+
+                    fillColor: "#20ad67",
+
+                    fillOpacity: 1
+
+                }
+
+            ).addTo(map);
+
+
+        startingMarker.bindPopup(
+            "Starting Point"
+        );
+
+
+
+        /* =====================================================
+           CURRENT LOCATION MARKER
+           ===================================================== */
+
+        currentMarker =
+
+            L.circleMarker(
+
+                routeCoordinates[
+                routeCoordinates.length - 1
+                ],
+
+                {
+
+                    radius: 7,
+
+                    color: "#e53935",
+
+                    fillColor: "#e53935",
+
+                    fillOpacity: 1
+
+                }
+
+            ).addTo(map);
+
+
+        currentMarker.bindPopup(
+            "Current Location"
+        );
+
+
+
+        /* =====================================================
+           ROUTE
+           ===================================================== */
+
+        routeLine =
+
+            L.polyline(
+
+                routeCoordinates,
+
+                {
+
+                    color: "#2869df",
+
+                    weight: 4
+
+                }
+
+            ).addTo(map);
+
+
+
+        /* =====================================================
+           TIME
+           ===================================================== */
+
+        function updateTime() {
+
+            document.getElementById(
+                "lastUpdated"
+            ).textContent =
+
+                new Date()
+                    .toLocaleTimeString();
+
+        }
+
+
+        updateTime();
+
+
+
+        /* =====================================================
+           INTERNET STATUS
+           ===================================================== */
+
+        function updateInternetStatus() {
+
+            const status =
+
+                document.getElementById(
+                    "internetStatus"
+                );
+
+
+            if (navigator.onLine) {
+
+                status.textContent =
+                    "● Online";
+
+                status.className =
+                    "status-value green";
+
+            }
+
+            else {
+
+                status.textContent =
+                    "● Offline";
+
+                status.className =
+                    "status-value red";
+
+            }
+
+
+            updateTime();
+
+        }
+
+
+        window.addEventListener(
+            "online",
+            updateInternetStatus
+        );
+
+
+        window.addEventListener(
+            "offline",
+            updateInternetStatus
+        );
+
+
+        updateInternetStatus();
+
+
+
+        /* =====================================================
+           GPS STATUS
+           ===================================================== */
+
+        function setGPSStatus(
+            text,
+            active
+        ) {
+
+            const status =
+
+                document.getElementById(
+                    "gpsStatus"
+                );
+
+
+            status.textContent =
+
+                active
+                    ? "● " + text
+                    : text;
+
+
+            if (active) {
+
+                status.className =
+                    "status-value green";
+
+            }
+
+            else {
+
+                status.className =
+                    "status-value";
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           UPDATE LOCATION
+           ===================================================== */
+
+        function updateLocation(position) {
+
+
+            const latitude =
+
+                position.coords.latitude;
+
+
+            const longitude =
+
+                position.coords.longitude;
+
+
+            const accuracy =
+
+                position.coords.accuracy;
+
+
+            const coordinates = [
+
+                latitude,
+
+                longitude
+
+            ];
+
+
+
+            /* GPS information */
+
+            document.getElementById(
+                "latitude"
+            ).textContent =
+
+                latitude.toFixed(6);
+
+
+            document.getElementById(
+                "longitude"
+            ).textContent =
+
+                longitude.toFixed(6);
+
+
+            document.getElementById(
+                "accuracy"
+            ).textContent =
+
+                Math.round(accuracy) +
+                " m";
+
+
+
+            updateTime();
+
+
+
+            /* =================================================
+               STARTING MARKER
+               ================================================= */
+
+            if (
+                startingMarker === null
+            ) {
+
+                startingMarker =
+
+                    L.circleMarker(
+
+                        coordinates,
+
+                        {
+
+                            radius: 7,
+
+                            color: "#20ad67",
+
+                            fillColor: "#20ad67",
+
+                            fillOpacity: 1
+
+                        }
+
+                    ).addTo(map);
+
+
+                startingMarker.bindPopup(
+                    "Starting Point"
+                );
+
+            }
+
+
+
+            /* =================================================
+               CURRENT MARKER
+               ================================================= */
+
+            if (
+                currentMarker === null
+            ) {
+
+                currentMarker =
+
+                    L.circleMarker(
+
+                        coordinates,
+
+                        {
+
+                            radius: 7,
+
+                            color: "#e53935",
+
+                            fillColor: "#e53935",
+
+                            fillOpacity: 1
+
+                        }
+
+                    ).addTo(map);
+
+
+                currentMarker.bindPopup(
+                    "Current Location"
+                );
+
+            }
+
+            else {
+
+                currentMarker.setLatLng(
+                    coordinates
+                );
+
+            }
+
+
+
+            /* =================================================
+               ROUTE
+               ================================================= */
+
+            routeCoordinates.push(
+                coordinates
+            );
+
+
+            if (
+                routeLine === null
+            ) {
+
+                routeLine =
+
+                    L.polyline(
+
+                        routeCoordinates,
+
+                        {
+
+                            color: "#2869df",
+
+                            weight: 4
+
+                        }
+
+                    ).addTo(map);
+
+            }
+
+            else {
+
+                routeLine.setLatLngs(
+                    routeCoordinates
+                );
+
+            }
+
+
+
+            /* Centre map */
+
+            map.setView(
+                coordinates,
+                16
+            );
+
+
+            setGPSStatus(
+                "Active",
+                true
+            );
+
+        }
+
+
+
+        /* =====================================================
+           GPS ERROR
+           ===================================================== */
+
+        function handleGPSError(error) {
+
+
+            let message =
+
+                "Unable to retrieve GPS location.";
+
+
+            if (error.code === 1) {
+
+                message =
+                    "Location permission was denied.";
+
+            }
+
+            else if (error.code === 2) {
+
+                message =
+                    "Location is unavailable.";
+
+            }
+
+            else if (error.code === 3) {
+
+                message =
+                    "GPS request timed out.";
+
+            }
+
+
+            setGPSStatus(
+                "Unavailable",
+                false
+            );
+
+
+            alert(message);
+
+        }
+
+
+
+        /* =====================================================
+           START TRACKING
+           ===================================================== */
+
+        function startTracking() {
+
+
+            if (
+                !navigator.geolocation
+            ) {
+
+                alert(
+                    "Geolocation is not supported by this browser."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                watchId !== null
+            ) {
+
+                return;
+
+            }
+
+
+            setGPSStatus(
+                "Connecting...",
+                false
+            );
+
+
+            watchId =
+
+                navigator.geolocation.watchPosition(
+
+                    updateLocation,
+
+                    handleGPSError,
+
+                    {
+
+                        enableHighAccuracy:
+                            true,
+
+                        maximumAge:
+                            0,
+
+                        timeout:
+                            15000
+
+                    }
+
+                );
+
+        }
+
+
+
+        /* =====================================================
+           STOP TRACKING
+           ===================================================== */
+
+        function stopTracking() {
+
+
+            if (
+                watchId !== null
+            ) {
+
+                navigator.geolocation.clearWatch(
+                    watchId
+                );
+
+                watchId = null;
+
+            }
+
+
+            setGPSStatus(
+                "Inactive",
+                false
+            );
+
+
+            if (
+                patrolStarted
+            ) {
+
+                finishPatrol();
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           REFRESH LOCATION
+           ===================================================== */
+
+        function refreshLocation() {
+
+
+            if (
+                !navigator.geolocation
+            ) {
+
+                alert(
+                    "Geolocation is not supported."
+                );
+
+                return;
+
+            }
+
+
+            navigator.geolocation.getCurrentPosition(
+
+                updateLocation,
+
+                handleGPSError,
+
+                {
+
+                    enableHighAccuracy:
+                        true,
+
+                    timeout:
+                        15000
+
+                }
+
+            );
+
+        }
+
+
+
+        /* =====================================================
+           PATROL
+           ===================================================== */
+
+        function startPatrol() {
+
+
+            const checkpoint =
+
+                document.getElementById(
+                    "checkpoint"
+                ).value;
+
+
+            patrolStarted =
+                true;
+
+
+            setGPSStatus(
+                "Patrol Active",
+                true
+            );
+
+
+            document.getElementById(
+                "recentPatrols"
+            ).textContent =
+
+                "Patrol started at " +
+
+                new Date()
+                    .toLocaleTimeString() +
+
+                " — " +
+
+                checkpoint;
+
+
+            document.getElementById(
+                "recentPatrols"
+            ).style.color =
+                "#2869df";
+
+
+            startTracking();
+
+        }
+
+
+
+        function finishPatrol() {
+
+
+            const checkpoint =
+
+                document.getElementById(
+                    "checkpoint"
+                ).value;
+
+
+            const time =
+
+                new Date()
+                    .toLocaleTimeString();
+
+
+            document.getElementById(
+                "recentPatrols"
+            ).textContent =
+
+                checkpoint +
+
+                " — finished at " +
+
+                time;
+
+
+            document.getElementById(
+                "recentPatrols"
+            ).style.color =
+                "#607389";
+
+
+            patrolStarted =
+                false;
+
+        }
+
+
+
+        /* =====================================================
+           SYNCHRONISATION
+           ===================================================== */
+
+        function syncNow() {
+
+
+            const status =
+
+                document.getElementById(
+                    "syncStatus"
+                );
+
+
+            const badge =
+
+                document.getElementById(
+                    "syncBadge"
+                );
+
+
+            status.textContent =
+                "Syncing...";
+
+
+            status.className =
+                "status-value blue";
+
+
+            badge.textContent =
+                "Syncing...";
+
+
+            badge.style.background =
+                "#edf3ff";
+
+
+            badge.style.color =
+                "#2869df";
+
+
+
+            setTimeout(
+
+                function () {
+
+
+                    const time =
+
+                        new Date()
+                            .toLocaleTimeString();
+
+
+                    document.getElementById(
+                        "lastUpload"
+                    ).textContent =
+                        time;
+
+
+                    document.getElementById(
+                        "syncMessage"
+                    ).textContent =
+
+                        "Last attempt just now: 0 uploaded";
+
+
+                    status.textContent =
+                        "Up to date";
+
+
+                    status.className =
+                        "status-value green";
+
+
+                    badge.textContent =
+                        "Up to date";
+
+
+                    badge.style.background =
+                        "#e5f8ed";
+
+
+                    badge.style.color =
+                        "#14985a";
+
+
+                },
+
+                700
+
+            );
+
+        }
+
+
+
+        /* =====================================================
+           SYNC HISTORY
+           ===================================================== */
+
+        function showHistory() {
+
+
+            alert(
+
+                "Server sync history\n\n" +
+
+                "No previous sync conflicts recorded."
+
+            );
+
+        }
+
+
+
+        /* =====================================================
+           REFRESH LOCATIONS
+           ===================================================== */
+
+        function refreshLocations() {
+
+
+            updateTime();
+
+            syncNow();
+
+
+            const button =
+
+                document.querySelector(
+                    ".page-title-row .blue-button"
+                );
+
+
+            const originalText =
+                button.textContent;
+
+
+            button.textContent =
+                "Refreshing...";
+
+
+            button.disabled =
+                true;
+
+
+            setTimeout(
+
+                function () {
+
+                    button.textContent =
+                        originalText;
+
+                    button.disabled =
+                        false;
+
+                },
+
+                700
+
+            );
+
+        }
+
+
+
+        /* =====================================================
+           COMMUNICATION SERVICES
+           ===================================================== */
+
+
+        function getBadgeNumber() {
+
+
+            const badge =
+
+                document.getElementById(
+                    "badgeNumber"
+                ).value.trim();
+
+
+            if (badge === "") {
+
+                alert(
+                    "Please enter a badge number first."
+                );
+
+                return null;
+
+            }
+
+
+            return badge;
+
+        }
+
+
+
+        /* =====================================================
+           BADGE NUMBER INPUT
+           ===================================================== */
+
+        document
+            .getElementById("badgeNumber")
+            .addEventListener(
+                "input",
+                function () {
+
+
+                    const badge =
+                        this.value.trim();
+
+
+                    const status =
+
+                        document.getElementById(
+                            "badgeStatus"
+                        );
+
+
+                    if (badge === "") {
+
+                        status.textContent =
+                            "No personnel selected.";
+
+                        status.style.color =
+                            "#7e8c9c";
+
+                        return;
+
+                    }
+
+
+                    status.textContent =
+
+                        "Badge " +
+                        badge +
+                        " selected";
+
+
+                    status.style.color =
+                        "#2869df";
+
+                }
+            );
+
+
+
+        /* =====================================================
+           CALL PERSONNEL
+           ===================================================== */
+
+        function callBadge() {
+
+
+            const badge =
+                getBadgeNumber();
+
+
+            if (!badge) {
+
+                return;
+
+            }
+
+
+            const status =
+
+                document.getElementById(
+                    "communicationStatus"
+                );
+
+
+            status.textContent =
+
+                "Calling badge " +
+                badge +
+                "...";
+
+
+            status.style.color =
+                "#20a967";
+
+
+            /*
+               This is where a real calling
+               service / backend would be
+               connected.
+            */
+
+
+            setTimeout(
+
+                function () {
+
+                    status.textContent =
+
+                        "Call initiated to badge " +
+                        badge;
+
+                },
+
+                500
+
+            );
+
+        }
+
+
+
+        /* =====================================================
+           MESSAGE PERSONNEL
+           ===================================================== */
+
+        function messageBadge() {
+
+
+            const badge =
+                getBadgeNumber();
+
+
+            if (!badge) {
+
+                return;
+
+            }
+
+
+            document
+                .getElementById(
+                    "messageText"
+                )
+                .focus();
+
+
+            document.getElementById(
+                "communicationStatus"
+            ).textContent =
+
+                "Ready to message badge " +
+                badge;
+
+        }
+
+
+
+        /* =====================================================
+           SEND MESSAGE
+           ===================================================== */
+
+        function sendMessage() {
+
+
+            const badge =
+                getBadgeNumber();
+
+
+            if (!badge) {
+
+                return;
+
+            }
+
+
+            const message =
+
+                document.getElementById(
+                    "messageText"
+                ).value.trim();
+
+
+            if (message === "") {
+
+                alert(
+                    "Please enter a message."
+                );
+
+                return;
+
+            }
+
+
+            const status =
+
+                document.getElementById(
+                    "communicationStatus"
+                );
+
+
+            status.textContent =
+
+                "Sending message to badge " +
+                badge +
+                "...";
+
+
+            status.style.color =
+                "#2869df";
+
+
+            setTimeout(
+
+                function () {
+
+
+                    status.textContent =
+
+                        "Message sent to badge " +
+                        badge;
+
+
+                    status.style.color =
+                        "#20a967";
+
+
+                    document.getElementById(
+                        "messageText"
+                    ).value = "";
+
+
+                },
+
+                600
+
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

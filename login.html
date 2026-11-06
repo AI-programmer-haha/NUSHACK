@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #080D19;
+        }
+
+        .login-container {
+            background: transparent;
+            padding: 50px;
+            width: 480px;
+            border: none;
+            box-shadow: none;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #F9FAFB;
+            font-size: 34px;
+        }
+
+        p {
+            text-align: center;
+            color: #9CA3AF;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            color: #E5E7EB;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 17px 22px;
+            margin-bottom: 25px;
+            background: #151C2D;
+            border: 1px solid #374151;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #8B5CF6;
+        }
+
+        input::placeholder {
+            color: #6B7280;
+        }
+
+        button {
+            width: 100%;
+            padding: 17px;
+            background: #7C3AED;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #6D28D9;
+        }
+
+        .signup {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+
+        .signup a {
+            color: #A78BFA;
+            text-decoration: none;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2>Welcome Back!</h2>
+        <p>Please login to your account</p>
+
+        <form>
+            <label>Email Address</label>
+            <input type="email" placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter your password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <div class="signup">
+            <p>Don't have an account?
+                <a href="#">Sign up</a>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
