@@ -23,35 +23,36 @@ GPS locating and communication system for patrols
 
 ## Project Structure
 
-```text
 Hackathon/
-├── .claude/               # IDE/AI configuration environments
-├── database/              # DB layer configurations
-│   ├── migrations/        # SQL migration files (001_auth, 002_sync, 003_routes)
-│   └── schema.sql         # Primary PostgreSQL database schema
-├── static/                # Frontend Assets
-│   ├── js/                # Core application scripting architecture
-│   │   ├── chat.js            # Real-time message exchange logic
-│   │   ├── db.js              # IndexedDB interface wrapper
-│   │   ├── location-cache.js  # Offline GPS coordinates caching
-│   │   ├── patrol-map.js      # Map drawing and rendering engine
-│   │   ├── patrol-store.js    # State management system
-│   │   ├── patrol-ui.js       # Dynamic DOM updates and events
-│   │   ├── route-cache.js     # Path and waypoint optimization store
-│   │   ├── route-follow.js    # Core patrol orientation algorithm
-│   │   ├── session.js         # Client authentication handling
-│   │   ├── supervisor.js      # Admin view controller logic
-│   │   ├── sync-monitor.js    # Network connectivity listener UI
-│   │   └── sync-queue.js      # Queue mechanism for deferred actions
-│   ├── offline.html       # Visual fallback page for zero-connectivity
-│   └── service-worker.js  # Network interceptor and asset cacher
-├── templates/             # Server-rendered HTML frames
-│   ├── forbidden.html     # Auth restriction view
-│   ├── locations.html     # Fleet geo-tracking interface
-│   ├── login.html         # User entry point portal
-│   └── supervisor.html    # Command hub viewport dashboard
-├── app.py                 # Core application entry point
-├── auth_session.py        # Token validations and session logic
-├── sync_service.py        # Synchronization backend coordinator
-├── test.http              # Native API integration test scripts
-└── .env.example           # Reference blueprint for secrets
+├── app.py                  
+├── auth_session.py         
+├── sync_service.py                
+├── .env.example
+├── test.http
+├── database/
+│   ├── schema.sql
+│   ├── migrations/
+│   │   ├── 001_supabase_auth_profiles.sql
+│   │   ├── 002_atomic_sync.sql
+│   │   └── 003_routes_alerts_messages.sql
+│   ├── check_setup.sql             # read-only health check
+│   └── repair_existing_tables.sql  # adds missing columns to old tables
+├── templates/
+│   ├── login.html  locations.html  supervisor.html
+│   └── profile.html  forbidden.html
+└── static/
+    ├── service-worker.js   # app shell and map tile caching
+    ├── offline.html
+    └── js/
+        ├── db.js             # IndexedDB wrapper (PatrolDB)
+        ├── patrol-store.js   # local-first patrols, check-ins, GPS points
+        ├── sync-queue.js     # durable outbox, coalescing and rebasing
+        ├── sync-monitor.js   # Synchronisation Monitor panel
+        ├── location-cache.js # offline copy of assigned locations
+        ├── route-cache.js    # offline routes + RouteGeo distance maths
+        ├── route-follow.js   # off-route banner and next stop
+        ├── patrol-map.js     # Leaflet map, GPS tracking, offline tiles
+        ├── patrol-ui.js      # Patrol panel
+        ├── supervisor.js     # Supervisor console
+        ├── chat.js           # officer ↔ supervisor messaging
+        └── session.js        # safe logout and local data wipe
