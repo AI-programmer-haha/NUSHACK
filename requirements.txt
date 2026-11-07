@@ -1,0 +1,12 @@
+# Web framework
+Flask>=3.1,<4
+
+#Supabase client (also installs postgrest, supabase_auth and httpx)
+supabase>=2.34,<3
+
+# Loads settings from .env
+python-dotenv>=1.2,<2
+
+# Imported directly by the app; listed so they're never missing
+httpx>=0.28,<1
+click>=8.1,<9
