@@ -38,9 +38,10 @@ GPS locating and communication system for patrols
 5. Make someone a supervisor (in the SQL Editor):
    ```sql
    UPDATE public.users SET role = 'supervisor' WHERE email = 'you@example.com';
+   ```
 
 # Project Structure
-
+```text
 Hackathon/
 ├── app.py                  
 ├── auth_session.py         
@@ -74,3 +75,4 @@ Hackathon/
         ├── supervisor.js     # Supervisor console
         ├── chat.js           # officer ↔ supervisor messaging
         └── session.js        # safe logout and local data wipe
+```
