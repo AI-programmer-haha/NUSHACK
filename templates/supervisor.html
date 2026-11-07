@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor Console</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+        body { background: #F1F5F9; color: #1E293B; min-height: 100vh; }
+
+        header {
+            background: #1E293B;
+            color: white;
+            padding: 22px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        header h1 { font-size: 24px; }
+        header p { color: #CBD5E1; margin-top: 4px; }
+
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .header-actions a, .header-actions button {
+            color: white;
+            background: transparent;
+            border: 1px solid #94A3B8;
+            border-radius: 9px;
+            padding: 10px 14px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .header-actions a:hover, .header-actions button:hover { background: #334155; }
+
+        .alert-strip {
+            background: #DC2626;
+            color: white;
+            padding: 12px 32px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        nav.tabs {
+            display: flex;
+            gap: 4px;
+            padding: 0 32px;
+            background: #E2E8F0;
+            overflow-x: auto;
+        }
+
+        nav.tabs button {
+            background: transparent;
+            color: #334155;
+            border: none;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            padding: 14px 18px;
+            font-size: 15px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        nav.tabs button[aria-selected="true"] {
+            border-bottom-color: #2563EB;
+            color: #1E293B;
+            font-weight: bold;
+        }
+
+        main { max-width: 1300px; margin: 24px auto; padding: 0 16px; }
+
+        .grid { display: grid; grid-template-columns: 3fr 2fr; gap: 20px; align-items: start; }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 6px #0000000d;
+            margin-bottom: 20px;
+        }
+
+        .panel h2 { font-size: 19px; margin-bottom: 14px; }
+        .panel h3 { font-size: 16px; margin: 16px 0 8px; }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .panel-heading h2 { margin: 0; }
+
+        .map { width: 100%; height: 460px; border-radius: 10px; z-index: 1; }
+
+        button {
+            padding: 10px 16px;
+            background: #2563EB;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #1D4ED8; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.small { padding: 6px 10px; font-size: 13px; }
+        button.secondary { background: #64748B; }
+        button.secondary:hover { background: #475569; }
+        button.danger { background: #DC2626; }
+        button.danger:hover { background: #B91C1C; }
+        button.ghost { background: #E2E8F0; color: #1E293B; }
+        button.ghost:hover { background: #CBD5E1; }
+
+        .list { list-style: none; }
+
+        .list > li {
+            padding: 12px 0;
+            border-bottom: 1px solid #F1F5F9;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .list > li:last-child { border-bottom: none; }
+
+        .muted { color: #64748B; }
+        .small-text { font-size: 13px; }
+        .empty { color: #64748B; padding: 12px 0; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 99px;
+            font-size: 12px;
+            white-space: nowrap;
+            background: #E2E8F0;
+            color: #334155;
+        }
+
+        .badge-ok   { background: #DCFCE7; color: #166534; }
+        .badge-warn { background: #FEF3C7; color: #92400E; }
+        .badge-bad  { background: #FEE2E2; color: #991B1B; }
+
+        .patrol-row.off { background: #FEF2F2; margin: 0 -20px; padding: 12px 20px; }
+
+        .alert-row strong { display: block; }
+
+        label.field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 12px;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            padding: 10px;
+            border: 1px solid #CBD5E1;
+            border-radius: 9px;
+            font-size: 15px;
+            width: 100%;
+            background: white;
+            color: #1E293B;
+        }
+
+        textarea { min-height: 60px; resize: vertical; }
+
+        .row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .row > * { flex: 1 1 140px; }
+
+        .checks { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; font-size: 14px; }
+        .checks label { display: flex; gap: 6px; align-items: center; }
+
+        .officer-list {
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid #E2E8F0;
+            border-radius: 9px;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+        }
+
+        .officer-list label { display: flex; gap: 8px; padding: 4px 0; font-size: 14px; }
+
+        .stops { list-style: none; counter-reset: stop; margin-bottom: 10px; }
+
+        .stops li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border: 1px solid #E2E8F0;
+            border-radius: 9px;
+            margin-bottom: 6px;
+            background: #F8FAFC;
+        }
+
+        .stops li .stop-name { flex: 1; }
+
+        .stops li .pos {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            flex: none;
+        }
+
+        .stop-number span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: #1E293B;
+            font-weight: bold;
+            font-size: 13px;
+            border: 2px solid white;
+        }
+
+        .officer-dot span {
+            display: block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 1px #1E293B55;
+        }
+
+        .officer-dot.on span { background: #2563EB; }
+        .officer-dot.off span { background: #DC2626; }
+
+        .hint { font-size: 13px; color: #64748B; margin: 6px 0 12px; }
+        .message { font-size: 14px; margin-top: 10px; }
+        .message:empty { display: none; }
+        .message-error { color: #991B1B; }
+        .message-success { color: #166534; }
+
+        .threads > li { cursor: pointer; }
+        .threads > li.active { background: #EFF6FF; margin: 0 -20px; padding: 12px 20px; }
+
+        .chat-list {
+            list-style: none;
+            height: 380px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .chat-msg { max-width: 85%; padding: 8px 12px; border-radius: 10px; font-size: 14px; }
+        .chat-mine { align-self: flex-end; background: #DBEAFE; }
+        .chat-theirs { align-self: flex-start; background: #F1F5F9; }
+        .chat-alert { align-self: stretch; max-width: none; background: #FEF2F2; border-left: 4px solid #DC2626; }
+        .chat-meta { font-size: 12px; color: #64748B; margin-bottom: 2px; }
+        .chat-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+        .chat-form { display: flex; gap: 8px; }
+        .chat-form input { flex: 1; min-width: 0; }
+
+        .map-mode { outline: 3px dashed #F59E0B; outline-offset: 3px; }
+
+        [hidden] { display: none !important; }
+
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+            header, nav.tabs { padding-left: 16px; padding-right: 16px; }
+            .alert-strip { padding: 12px 16px; }
+            .map { height: 340px; }
+        }
+    </style>
+</head>
+
+<body data-user-id="{{ user_id }}">
+
+    <header>
+        <div>
+            <h1>Supervisor Console</h1>
+            <p>Routes, live patrols and messages</p>
+        </div>
+        <div class="header-actions">
+            <a href="/me">Profile</a>
+            <a href="/locations-page">Patrol app</a>
+            <button id="logoutButton" type="button">Log out</button>
+        </div>
+    </header>
+
+    <div id="alertStrip" class="alert-strip" role="alert" hidden></div>
+
+    <nav class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="live" aria-selected="true">Live patrols</button>
+        <button type="button" role="tab" data-tab="routes" aria-selected="false">Routes &amp; checkpoints</button>
+        <button type="button" role="tab" data-tab="messages" aria-selected="false">Messages <span id="threadsUnread" class="badge badge-bad" hidden></span></button>
+    </nav>
+
+    <main>
+
+        <!-- LIVE -->
+        <section data-panel="live">
+            <div class="grid">
+                <div>
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h2>Live map</h2>
+                            <span id="liveUpdated" class="muted small-text"></span>
+                        </div>
+                        <div id="liveMap" class="map"></div>
+                        <p class="hint">Blue: on route · Red: off route · Orange dashed: planned route. Positions update when officers' devices are online.</p>
+                    </div>
+                    <div class="panel">
+                        <h2>Active patrols</h2>
+                        <ul id="patrolList" class="list"></ul>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h2>Open alerts</h2>
+                        <label class="small-text muted"><input type="checkbox" id="showAcked"> show acknowledged</label>
+                    </div>
+                    <ul id="alertList" class="list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROUTES -->
+        <section data-panel="routes" hidden>
+            <div class="grid">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h2 id="editorTitle">Routes</h2>
+                        <div class="row" style="flex:none">
+                            <button type="button" id="addCheckpointMode" class="ghost small">+ Place new checkpoint</button>
+                        </div>
+                    </div>
+                    <div id="routeMap" class="map"></div>
+                    <p class="hint" id="routeMapHint">Click a checkpoint marker to add it to the route being edited. Use “Place new checkpoint”, then click the map, to create one.</p>
+
+                    <form id="checkpointForm" class="panel" hidden style="box-shadow:none;border:1px solid #E2E8F0;margin-top:12px">
+                        <h3>New checkpoint</h3>
+                        <div class="row">
+                            <label class="field">Name <input type="text" id="cpName" required maxlength="120"></label>
+                            <label class="field">QR / NFC code <input type="text" id="cpCode" maxlength="60" placeholder="optional"></label>
+                        </div>
+                        <label class="field">Belongs to (building / area)
+                            <select id="cpParent"></select>
+                        </label>
+                        <p class="hint" id="cpCoords"></p>
+                        <div class="row" style="flex:none;gap:8px">
+                            <button type="submit">Create checkpoint</button>
+                            <button type="button" class="secondary" id="cpCancel">Cancel</button>
+                        </div>
+                        <p id="cpMessage" class="message"></p>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="panel" id="routeListPanel">
+                        <div class="panel-heading">
+                            <h2>All routes</h2>
+                            <button type="button" id="newRouteButton" class="small">+ New route</button>
+                        </div>
+                        <ul id="routeList" class="list"></ul>
+                    </div>
+
+                    <form class="panel" id="routeForm" hidden>
+                        <div class="panel-heading">
+                            <h2 id="routeFormTitle">New route</h2>
+                            <button type="button" id="closeRouteForm" class="ghost small">Close</button>
+                        </div>
+                        <label class="field">Name <input type="text" id="rName" required maxlength="120"></label>
+                        <label class="field">Description <textarea id="rDescription" maxlength="2000"></textarea></label>
+                        <div class="row">
+                            <label class="field">Allowed distance from route (m)
+                                <input type="number" id="rCorridor" min="10" max="1000" value="50" required>
+                            </label>
+                            <label class="field">Expected duration (min)
+                                <input type="number" id="rMinutes" min="1" max="1440" placeholder="optional">
+                            </label>
+                        </div>
+                        <div class="checks">
+                            <label><input type="checkbox" id="rStrict" checked> Visit stops in order</label>
+                            <label><input type="checkbox" id="rLoop"> Loop back to start</label>
+                            <label><input type="checkbox" id="rActive" checked> Active</label>
+                        </div>
+
+                        <h3>Stops <span class="muted small-text">(in patrol order)</span></h3>
+                        <ol id="stopList" class="stops"></ol>
+                        <div class="row" style="align-items:flex-end">
+                            <label class="field" style="margin:0">Add checkpoint
+                                <select id="stopPicker"></select>
+                            </label>
+                            <button type="button" id="addStop" style="flex:none">Add</button>
+                        </div>
+
+                        <h3>Assigned officers</h3>
+                        <div id="officerChecks" class="officer-list"></div>
+
+                        <div class="row" style="flex:none;gap:8px;margin-top:6px">
+                            <button type="submit" id="saveRoute">Save route</button>
+                            <button type="button" id="deleteRoute" class="danger" hidden>Delete</button>
+                        </div>
+                        <p id="routeMessage" class="message"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- MESSAGES -->
+        <section data-panel="messages" hidden>
+            <div class="grid" style="grid-template-columns: 1fr 2fr">
+                <div class="panel">
+                    <h2>Conversations</h2>
+                    <ul id="threadList" class="list threads"></ul>
+                    <h3>Message another officer</h3>
+                    <div class="row" style="align-items:flex-end">
+                        <select id="newThreadOfficer" aria-label="Officer"></select>
+                        <button type="button" id="openThread" style="flex:none" class="small">Open</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2 id="threadTitle">Choose a conversation</h2>
+                    <ul id="supChatList" class="chat-list"></ul>
+                    <form id="supChatForm" class="chat-form">
+                        <input type="text" id="supChatInput" maxlength="2000" autocomplete="off" aria-label="Message">
+                        <button type="submit">Send</button>
+                    </form>
+                    <p id="supChatStatus" class="message muted"></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script id="mapConfig" type="application/json">{{ map_config | tojson }}</script>
+    <script src="/static/js/route-cache.js"></script>
+    <script src="/static/js/chat.js"></script>
+    <script src="/static/js/supervisor.js"></script>
+
+</body>
+</html>

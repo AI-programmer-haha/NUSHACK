@@ -1,0 +1,698 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080D19">
+    <title>Security Management System | Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #080D19;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: transparent;
+            padding: 40px;
+            width: 480px;
+            max-width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #F9FAFB;
+            font-size: 34px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            color: #E5E7EB;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 17px 22px;
+            margin-bottom: 25px;
+            background: #151C2D;
+            border: 1px solid #374151;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #8B5CF6;
+        }
+
+        input::placeholder {
+            color: #6B7280;
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-container input {
+            padding-right: 55px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 18px;
+            top: 0;
+            width: auto;
+            height: 54px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: #9CA3AF;
+            cursor: pointer;
+        }
+
+        .toggle-password:hover {
+            background: transparent;
+            color: #A78BFA;
+        }
+
+        button.primary-button {
+            width: 100%;
+            padding: 17px;
+            background: #7C3AED;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.primary-button:hover {
+            background: #6D28D9;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message,
+        #registerMessage {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 14px;
+            min-height: 18px;
+            line-height: 1.5;
+        }
+
+        .signup {
+            margin-top: 30px;
+            font-size: 16px;
+        }
+
+        .signup p {
+            text-align: center;
+            color: #9CA3AF;
+        }
+
+        .signup a {
+            color: #A78BFA;
+            text-decoration: none;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2 id="pageTitle">Welcome Back!</h2>
+
+        <p class="subtitle" id="pageSubtitle">
+            Please login to your account
+        </p>
+
+        <!-- ==============================
+             LOGIN FORM
+        =============================== -->
+
+        <form id="loginForm">
+
+            <label for="email">Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <div class="password-container">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="togglePassword"
+                    aria-label="Show password"
+                >
+                    <svg
+                        id="eyeIcon"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+
+            </div>
+
+            <button
+                type="submit"
+                class="primary-button"
+                id="loginButton"
+            >
+                Login
+            </button>
+
+            <p id="message" aria-live="polite"></p>
+
+        </form>
+
+
+        <!-- ==============================
+             REGISTRATION FORM
+        =============================== -->
+
+        <form id="registerForm" class="hidden">
+
+            <label for="regFullName">Full Name</label>
+
+            <input
+                type="text"
+                id="regFullName"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required
+            >
+
+            <label for="regUsername">Username</label>
+
+            <input
+                type="text"
+                id="regUsername"
+                placeholder="Choose a username"
+                minlength="3"
+                maxlength="50"
+                autocomplete="username"
+                required
+            >
+
+            <label for="regEmail">Email Address</label>
+
+            <input
+                type="email"
+                id="regEmail"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+            >
+
+            <label for="regPassword">Password</label>
+
+            <div class="password-container">
+
+                <input
+                    type="password"
+                    id="regPassword"
+                    placeholder="Create a password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="toggleRegPassword"
+                    aria-label="Show password"
+                >
+                    <svg
+                        id="regEyeIcon"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+
+            </div>
+
+            <button
+                type="submit"
+                class="primary-button"
+                id="registerButton"
+            >
+                Create Account
+            </button>
+
+            <p id="registerMessage" aria-live="polite"></p>
+
+        </form>
+
+
+        <!-- ==============================
+             LOGIN / SIGNUP TOGGLE
+        =============================== -->
+
+        <div class="signup">
+
+            <p id="toggleText">
+                Don't have an account?
+                <a href="#" id="signupLink">Sign up</a>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // ==================================
+        // ELEMENTS
+        // ==================================
+
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+
+        const signupLink = document.getElementById("signupLink");
+
+        const pageTitle = document.getElementById("pageTitle");
+        const pageSubtitle = document.getElementById("pageSubtitle");
+
+        const loginMessage = document.getElementById("message");
+        const registerMessage = document.getElementById("registerMessage");
+
+        let isRegistering = false;
+
+
+        // ==================================
+        // SHOW / HIDE PASSWORD
+        // ==================================
+
+        function setupPasswordToggle(inputId, buttonId, iconId) {
+
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            const icon = document.getElementById(iconId);
+
+            button.addEventListener("click", function() {
+
+                if (input.type === "password") {
+
+                    input.type = "text";
+
+                    button.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                    icon.innerHTML = `
+                        <path d="M3 3l18 18"/>
+                        <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+                        <path d="M9.9 5.2A11 11 0 0 1 12 5c6.5 0 10 7 10 7a14 14 0 0 1-3.1 3.9"/>
+                        <path d="M6.6 6.6C3.5 8.5 2 12 2 12s3.5 7 10 7c1 0 2-.2 2.9-.5"/>
+                    `;
+
+                } else {
+
+                    input.type = "password";
+
+                    button.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                    icon.innerHTML = `
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    `;
+
+                }
+
+            });
+
+        }
+
+        setupPasswordToggle(
+            "password",
+            "togglePassword",
+            "eyeIcon"
+        );
+
+        setupPasswordToggle(
+            "regPassword",
+            "toggleRegPassword",
+            "regEyeIcon"
+        );
+
+
+        // ==================================
+        // LOGIN / REGISTER TOGGLE
+        // ==================================
+
+        signupLink.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            isRegistering = !isRegistering;
+
+            loginForm.classList.toggle(
+                "hidden",
+                isRegistering
+            );
+
+            registerForm.classList.toggle(
+                "hidden",
+                !isRegistering
+            );
+
+            if (isRegistering) {
+
+                pageTitle.textContent = "Create Account";
+
+                pageSubtitle.textContent =
+                    "Register for your security account";
+
+                signupLink.textContent = "Login";
+
+                document.getElementById("toggleText").firstChild.textContent =
+                    "Already have an account? ";
+
+            } else {
+
+                pageTitle.textContent = "Welcome Back!";
+
+                pageSubtitle.textContent =
+                    "Please login to your account";
+
+                signupLink.textContent = "Sign up";
+
+                document.getElementById("toggleText").firstChild.textContent =
+                    "Don't have an account? ";
+
+            }
+
+            loginMessage.textContent = "";
+            registerMessage.textContent = "";
+
+        });
+
+
+        // ==================================
+        // LOGIN FUNCTIONALITY
+        // ==================================
+
+        loginForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            const loginButton = document.getElementById("loginButton");
+
+            loginMessage.textContent = "Logging in...";
+            loginMessage.style.color = "#A78BFA";
+
+            loginButton.disabled = true;
+
+            try {
+
+                const response = await fetch("/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    loginMessage.textContent = "Login successful!";
+                    loginMessage.style.color = "#4ADE80";
+
+                    try {
+                        localStorage.removeItem("patrol_logout_pending");
+                    } catch (error) {
+                        // Storage unavailable
+                    }
+
+                    window.location.href = "/locations-page";
+
+                } else {
+
+                    loginMessage.textContent =
+                        data.error || "Login failed. Please try again.";
+
+                    loginMessage.style.color = "#F87171";
+
+                }
+
+            } catch (error) {
+
+                loginMessage.textContent =
+                    "Unable to connect. Please check your internet connection.";
+
+                loginMessage.style.color = "#F87171";
+
+            } finally {
+
+                loginButton.disabled = false;
+
+            }
+
+        });
+
+
+        // ==================================
+        // REGISTRATION FUNCTIONALITY
+        // ==================================
+
+        registerForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const fullName = document.getElementById("regFullName").value.trim();
+            const username = document.getElementById("regUsername").value.trim();
+            const email = document.getElementById("regEmail").value.trim();
+            const password = document.getElementById("regPassword").value;
+
+            const registerButton = document.getElementById("registerButton");
+
+            if (username.length < 3) {
+
+                registerMessage.textContent =
+                    "Username must be at least 3 characters.";
+
+                registerMessage.style.color = "#F87171";
+
+                return;
+
+            }
+
+            if (password.length < 8) {
+
+                registerMessage.textContent =
+                    "Password must be at least 8 characters.";
+
+                registerMessage.style.color = "#F87171";
+
+                return;
+
+            }
+
+            registerMessage.textContent = "Creating account...";
+            registerMessage.style.color = "#A78BFA";
+
+            registerButton.disabled = true;
+
+            try {
+
+                const response = await fetch("/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify({
+                        full_name: fullName,
+                        username: username,
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    if (data.logged_in) {
+
+                        registerMessage.textContent =
+                            "Account created successfully! Redirecting...";
+
+                        registerMessage.style.color = "#4ADE80";
+
+                        try {
+                            localStorage.removeItem("patrol_logout_pending");
+                        } catch (error) {
+                            // Storage unavailable
+                        }
+
+                        window.location.href = "/locations-page";
+
+                    } else {
+
+                        registerMessage.textContent =
+                            "Account created! Please check your email for confirmation.";
+
+                        registerMessage.style.color = "#4ADE80";
+
+                        registerForm.reset();
+
+                    }
+
+                } else {
+
+                    registerMessage.textContent =
+                        data.error || "Registration failed.";
+
+                    registerMessage.style.color = "#F87171";
+
+                }
+
+            } catch (error) {
+
+                registerMessage.textContent =
+                    "Unable to connect. Please check your internet connection.";
+
+                registerMessage.style.color = "#F87171";
+
+            } finally {
+
+                registerButton.disabled = false;
+
+            }
+
+        });
+
+
+        // ==================================
+        // REGISTER SERVICE WORKER
+        // ==================================
+
+        if ("serviceWorker" in navigator) {
+
+            window.addEventListener("load", () => {
+
+                navigator.serviceWorker.register("/static/sw.js")
+                    .then(() => {
+                        console.log(
+                            "Service Worker registered successfully."
+                        );
+                    })
+                    .catch(error => {
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+                    });
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>

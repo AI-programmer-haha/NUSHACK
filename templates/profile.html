@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My profile</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #F1F5F9;
+            color: #1E293B;
+            margin: 0;
+        }
+        header {
+            background: #1E293B;
+            color: white;
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        header h1 { font-size: 24px; margin: 0; }
+        header p { color: #CBD5E1; margin: 4px 0 0; }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .header-link {
+            color: white;
+            border: 1px solid #94A3B8;
+            border-radius: 9px;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .header-link:hover { background: #334155; }
+        main {
+            max-width: 560px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 2px 6px #0000000d;
+        }
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #2563EB;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        h2 { margin: 0 0 4px; font-size: 22px; }
+        .role {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            text-transform: capitalize;
+            background: #E2E8F0;
+            color: #334155;
+        }
+        .role.supervisor, .role.admin { background: #DBEAFE; color: #1D4ED8; }
+        dl { margin: 24px 0 0; display: grid; grid-template-columns: 130px 1fr; gap: 12px 16px; }
+        dt { color: #64748B; font-size: 14px; }
+        dd { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+        .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+        .button {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-size: 15px;
+            border: 1px solid #CBD5E1;
+            color: #1E293B;
+            background: white;
+        }
+        .button:hover { background: #F8FAFC; }
+        .button.primary { background: #2563EB; border-color: #2563EB; color: white; }
+        .button.primary:hover { background: #1D4ED8; }
+        @media (max-width: 480px) {
+            header { padding: 16px; }
+            dl { grid-template-columns: 1fr; gap: 4px; }
+            dd { margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Security Management System</h1>
+            <p>My profile</p>
+        </div>
+        <div class="header-actions">
+            <a href="/locations-page" class="header-link">Patrol app</a>
+            {% if is_supervisor %}
+            <a href="/supervisor" class="header-link">Supervisor</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        <section class="card">
+            {% set display_name = profile.full_name or profile.username or profile.email %}
+            <div class="avatar">{{ (display_name or "?")[0] | upper }}</div>
+            <h2>{{ display_name }}</h2>
+            <span class="role {{ profile.role }}">{{ profile.role }}</span>
+
+            <dl>
+                <dt>Username</dt>
+                <dd>{{ profile.username or "—" }}</dd>
+                <dt>Full name</dt>
+                <dd>{{ profile.full_name or "—" }}</dd>
+                <dt>Email</dt>
+                <dd>{{ profile.email }}</dd>
+                <dt>Role</dt>
+                <dd style="text-transform: capitalize;">{{ profile.role }}</dd>
+                {% if profile.created_at %}
+                <dt>Member since</dt>
+                <dd>{{ profile.created_at[:10] }}</dd>
+                {% endif %}
+            </dl>
+
+            <div class="actions">
+                <a href="/locations-page" class="button">Back to patrols</a>
+                {% if is_supervisor %}
+                <a href="/supervisor" class="button primary">Open supervisor console</a>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
