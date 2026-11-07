@@ -271,7 +271,7 @@ def register():
         print("REGISTRATION ERROR:", repr(e))
 
         return jsonify({
-            "error": "Registration failed. Check the Flask terminal."
+            "error": "Registration failed. Please try again."
         }), 400
 
 
@@ -311,7 +311,7 @@ def login():
         print("LOGIN ERROR:", repr(e))
 
         return jsonify({
-            "error": "Login failed. Check the Flask terminal."
+            "error": "Login failed. Please try again."
         }), 401
 
 
