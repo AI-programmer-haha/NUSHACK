@@ -21,7 +21,25 @@ GPS locating and communication system for patrols
 
 ---
 
-## Project Structure
+# How to run file
+1. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Copy `.env.example` to `.env` and fill in your Supabase URL and key.
+3. In the Supabase SQL Editor, run in order:
+   `database/schema.sql` → `migrations/001` → `002` → `003`,
+   then `database/check_setup.sql` (every row should say OK).
+4. Run the app
+   ```bash
+   python app.py
+   ```
+   Open http://127.0.0.1:5000 and register an account.
+5. Make someone a supervisor (in the SQL Editor):
+   ```sql
+   UPDATE public.users SET role = 'supervisor' WHERE email = 'you@example.com';
+
+# Project Structure
 
 Hackathon/
 ├── app.py                  
